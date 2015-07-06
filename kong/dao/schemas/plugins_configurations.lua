@@ -38,6 +38,14 @@ return {
       return false, DaoError("No consumer can be configured for that plugin", constants.DATABASE_ERROR_TYPES.SCHEMA)
     end
 
+    -- Invoke on_insert() on the plugin
+    if value_schema.on_insert and type(value_schema.on_insert) == "function" then
+      local valid, err = value_schema.on_insert(plugin_t.value or {}, dao, value_schema)
+      if not valid or err then
+        return false, DaoError(err, constants.DATABASE_ERROR_TYPES.SCHEMA)
+      end
+    end
+
     local res, err = dao.plugins_configurations:find_by_keys({
       name = plugin_t.name,
       api_id = plugin_t.api_id,

@@ -190,12 +190,11 @@ describe("Entities Schemas", function()
       assert.True(valid)
 
       -- Failure
-      plugin = {name = "ratelimiting", api_id = "stub", value = {period = "hello"}}
+      plugin = {name = "ratelimiting", api_id = "stub", value = { second = "hello" }}
 
       local valid, errors = validate_fields(plugin, plugins_configurations_schema)
       assert.False(valid)
-      assert.equal("limit is required", errors["value.limit"])
-      assert.equal("\"hello\" is not allowed. Allowed values are: \"second\", \"minute\", \"hour\", \"day\", \"month\", \"year\"", errors["value.period"])
+      assert.equal("second is not a number", errors["value.second"])
     end)
 
     describe("on_insert", function()
